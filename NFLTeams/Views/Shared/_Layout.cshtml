@@ -1,0 +1,46 @@
+﻿@{
+    string controller =
+    ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width,
+initial-scale=1.0" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+          rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <div class="container">
+        <header class="text-center text-white">
+            <h1 class="bg-primary mt-3 p-3">NFL Teams</h1>
+            @* show any message in TempData *@
+            @if (TempData.Keys.Contains("message"))
+            {
+                <h4 class="bg-success p-2">@TempData["message"]</h4>
+            }
+            @* show link to Favorites page unless on page *@
+            @if (controller != "Favorites")
+            {
+                var session = new NFLSession(Context.Session);
+                int? count = session.GetMyTeamCount();
+                @* if fave teams in session, display faves link *@
+                @if (count.HasValue)
+                {
+                    <h5 class="bg-info p-2">
+                        <a asp-controller="Favorites"
+                           asp-action="Index"
+                           class="text-white">My Favorite Teams</a>
+                        <span class="badge bg-light text-black">
+                            @count
+                        </span>
+                    </h5>
+                }
+            }
+        </header>
+        <main>@RenderBody()</main>
+    </div>
+</body>
+</html>
